@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "deepneuralnet": "^1.2.0",
-    "my-utils": "github:Maneren/my-utils#v0.1.0",
+    "my-utils": "github:Maneren/my-utils#v0.1.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.3",
