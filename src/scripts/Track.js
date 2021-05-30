@@ -1,9 +1,8 @@
 import { Img, XY } from './Other';
-import p5Types from 'p5';
 
 class Track {
   constructor (img, p5) {
-    this.startPos = p5.createVector(600, 620);
+    this.startPos = p5.createVector(600, 640);
     this.startRot = 0;
 
     this.img = img;

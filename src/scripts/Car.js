@@ -2,7 +2,7 @@ import NN from 'deepneuralnet';
 import p5Types from 'p5';
 
 class Car {
-  constructor (img, pos, rot, brain = new NN([6, 5, 10, 2])) {
+  constructor (img, pos, rot, brain = new NN([6, 64, 64, 64, 64, 2])) {
     this.img = img;
 
     this.pos = pos.copy();
@@ -86,15 +86,17 @@ class Car {
     this.pos.add(move);
 
     this.score += this.speed;
+    this.score += 0.5;
   }
 
   think (track) {
     const { brain, topSpeed, accelerationPower, brakingPower } = this;
     const input = [this.speed / 4, ...this.querySensors(track)];
     const output = brain.query(input);
-    const [gasPedal, steering] = output.map(x => x * 2 - 1);
+    const [gasPedal, steering] = output.map((x) => x * 2 - 1);
 
-    const fSpeed = x => (accelerationPower / (1 + Math.E ** (0.9 * (x - topSpeed))));
+    const fSpeed = (x) =>
+      accelerationPower / (1 + Math.E ** (0.9 * (x - topSpeed)));
     if (gasPedal >= 0) {
       this.speed += fSpeed(gasPedal);
       this.speed = Math.min(this.speed, topSpeed);
@@ -103,15 +105,17 @@ class Car {
       this.speed = Math.max(this.speed, 0);
     }
 
-    const fSteering = x => 1 / (1 + Math.E ** (-(x - topSpeed / 2)));
-    this.steering = steering / 6 * fSteering(this.speed);
+    const fSteering = (x) => 1 / (1 + Math.E ** -(x - topSpeed / 2));
+    this.steering = (steering / 7) * fSteering(this.speed);
+
+    if (Math.abs(steering) > 0.05) this.speed *= 0.9995;
 
     if (this.speed < 0.1) this.alive = false;
   }
 
   querySensors (track) {
     const { sensors, pos, rot } = this;
-    return sensors.map(sensor => sensor.query(track, pos, rot));
+    return sensors.map((sensor) => sensor.query(track, pos, rot));
   }
 
   get corners () {

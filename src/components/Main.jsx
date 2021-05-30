@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import Sketch from 'react-p5';
-import p5Types from 'p5';
 import Car from '../scripts/Car';
 import Track from '../scripts/Track';
 import Utils from 'my-utils';
+
+import car from './assets/formula.png';
 
 class Main extends Component {
   constructor (props) {
@@ -16,7 +17,7 @@ class Main extends Component {
 
     this.boost = false;
 
-    this.trackName = 'track1';
+    this.trackName = 'track2';
   }
 
   /**
@@ -24,7 +25,7 @@ class Main extends Component {
    */
   preload (p5) {
     this.trackImg = p5.loadImage(`${window.location.origin}/assets/${this.trackName}.jpg`);
-    this.carImg = p5.loadImage(`${window.location.origin}/assets/formula.png`);
+    this.carImg = p5.loadImage(car);
   }
 
   /**
@@ -65,10 +66,8 @@ class Main extends Component {
       if (this.currentCars.length === 0 || this.currentGenerationFrames > maxFramesPerGeneration) {
         this.nextGen(p5);
         this.currentGenerationFrames = 0;
-        // this.maxFramesPerGeneration = 10 * 60 * this.generationNumber;
       }
     }
-    // console.log(this.currentCars[0].speed);
   }
 
   nextGen (p5) {
@@ -97,7 +96,7 @@ class Main extends Component {
 
       const cars = this.cars.sort((a, b) => b.score - a.score);
       console.log(`Generation: ${this.generationNumber}, best of generation: ${Math.round(cars[0].score)}`);
-      if (cars[0].score > 3000) {
+      if (cars[0].score > 3000 && !this.boost) {
         this.boost = true;
         this.maxFramesPerGeneration *= 1.5;
       }
@@ -109,7 +108,7 @@ class Main extends Component {
         newCar.brain.mutate(mutate);
         newCar.init(p5);
         newCars[i] = newCar;
-        if (this.boost) newCar.topSpeed += 5;
+        if (this.boost) newCar.topSpeed = 12;
       }
 
       this.cars = newCars;
